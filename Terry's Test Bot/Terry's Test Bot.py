@@ -3,6 +3,7 @@
 #Purpose: My first discord "test bot"; playing around with the discord library
 #         and various bot functions/usages in a server.
 
+#Invite link: https://discord.com/api/oauth2/authorize?client_id=858803690596073482&permissions=0&scope=bot
 
 import discord
 
