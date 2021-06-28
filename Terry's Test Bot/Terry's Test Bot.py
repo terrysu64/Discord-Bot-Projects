@@ -8,8 +8,8 @@ import discord
 
 client = discord.Client()
 
-bot_token = 'ODU4ODAzNjkwNTk2MDczNDgy.YNjdQw.h5szfvuo-_fxrOkq3wdapHfYvcA'
-bot_maintenance_channel_id = 858869667865821194
+# bot_token = 
+# bot_maintenance_channel_id = 
 
 @client.event
 async def on_ready():
