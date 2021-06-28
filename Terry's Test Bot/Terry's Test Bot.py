@@ -20,5 +20,5 @@ async def on_ready():
     print('We have logged in as {0.user}'.format(client))
     await client.get_channel(bot_maintenance_channel_id).send("Terry's Test Bot is ready to go!") #sends message to bot-maintenance channel
 
-client.run(bot_token) #initiate's our bot on discord
+client.run(bot_token) #initiates our bot on discord
     
