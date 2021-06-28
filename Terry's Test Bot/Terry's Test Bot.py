@@ -11,9 +11,8 @@ import discord
 
 client = discord.Client()
 
-bot_token = 'ODU4ODAzNjkwNTk2MDczNDgy.YNjdQw.h5szfvuo-_fxrOkq3wdapHfYvcA' #the bot's token is similar to a password to directly access the bot on
-                                                                          #discord from our code
-bot_maintenance_channel_id = 858869667865821194
+# bot_token =  #the bot's token is similar to a password to directly access the bot on discord from our code
+# bot_maintenance_channel_id = 
 
 @client.event
 async def on_ready(): #set's up or updates our bot
