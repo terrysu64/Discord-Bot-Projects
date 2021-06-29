@@ -116,11 +116,30 @@ async def unban(ctx, *, member):
             await ctx.send(f'{user.name}#{user.discriminator} has been disciplined and unbanned')
             return
 
+          
+@client.command()
+#loading cogs manually (files of code that are loaded onto our main class/this file; helps us organize our bot program instead of jamming everything on here)
+async def load(ctx, extension):
+    client.load_extension(f'cogs.{extension}')
 
 
+@client.command()
+#unloading cogs manually
+async def unload(ctx, extension):
+    client.unload_extension(f'cogs.{extension}')
+
+
+#loads all cogs by default when we start up the bot (could also be made into a command)
+for filename in os.listdir("./Terry's Test Bot - Cogs"): #looks for python files 
+    if filename.endswith('.py'):
+        client.load_extension(f"Terry's Test Bot - Cogs.{filename[:-3]}")
+
+
+
+
+client.run(bot_token) #initiates our bot on discord
 
     
 
-client.run(bot_token) #initiates our bot on discord
     
 
