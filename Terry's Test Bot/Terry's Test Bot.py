@@ -9,21 +9,30 @@
 
 import discord
 from discord.ext import commands
+from discord.ext import tasks
+from itertools import cycle
+import os
 import random
 
 intents = discord.Intents(messages = True, guilds = True, reactions = True, members = True, presences = True)
 client = commands.Bot(command_prefix= '//' , intents = intents)
 
-bot_token = '' #the bot's token is similar to a password to directly access the bot on
+bot_token =  #the bot's token is similar to a password to directly access the bot on
                                                                           #discord from our code
 bot_maintenance_channel_id = 
+
 
 @client.event
 #set's up or updates our bot
 async def on_ready():
+    
     print('We have logged in as {0.user}'.format(client))
     await client.get_channel(bot_maintenance_channel_id).send("Terry's Test Bot is updated and ready to go!") #sends message to bot-maintenance channel
-
+    
+    await client.change_presence(status = discord.Status.idle)
+    await client.change_presence(activity = discord.Activity(type = discord.ActivityType.watching, name = 'YouTube'))
+    #there are a range of prescences/status and activities we could initialize for our bot
+                                                                                                                  
 
 @client.event
 #notifies us in the shell when users have joined the server
@@ -50,7 +59,16 @@ async def on_message(message):
             await message.channel.send('Hey! This is a test bot! No specific purpose, just used to play around with the Discord library and its functions!')
         
         elif message.content == '//roll dice': #rolls a dice 
-            await message.channel.send('you rolled a ' + str(random.randint(1,6)) + ' ' + '\N{GAME DIE}') #use /N{emoji name} to send emojis
+            await message.channel.send(f'you rolled a {random.randint(1,6)} ' + '\N{GAME DIE}') #use '/N{emoji name}' to send emojis
+
+
+@client.event
+#general error handling
+async def on_command_error(ctx, error):
+
+    await ctx.send('ah looks like we encountered an error with your command ' + '\N{FACE WITH OPEN MOUTH}')
+    if isinstance(error, commands.MissingRequiredArgument): #we could also specify the specific error if we want
+        await ctx.send('missing required arguments!')
 
 
 @client.command()
@@ -73,13 +91,14 @@ async def random_ans(ctx, *, question): # * lets us take in multiple arguments a
 
 @client.command()
 #clears a certain amount of messages from a channel
-async def clear(ctx, amount = 1):
-
-    if amount < 0:
-        await ctx.channel.send('invalid clear amount')
-                               
+async def clear(ctx, amount: int):                 
     await ctx.channel.purge(limit = amount)
 
+
+@clear.error
+#command-specific error handling
+async def clear_error(ctx, error):
+    await ctx.send('please specify an amount of messages to delete')
 
 @client.command()
 #kicking a member
@@ -116,7 +135,7 @@ async def unban(ctx, *, member):
             await ctx.send(f'{user.name}#{user.discriminator} has been disciplined and unbanned')
             return
 
-          
+
 @client.command()
 #loading cogs manually (files of code that are loaded onto our main class/this file; helps us organize our bot program instead of jamming everything on here)
 async def load(ctx, extension):
@@ -129,6 +148,20 @@ async def unload(ctx, extension):
     client.unload_extension(f'cogs.{extension}')
 
 
+status = cycle(['Minecraft','Fortnite','Slither.io', 'Clash Royale'])
+@tasks.loop(seconds = 10)
+#changes bots status every 5 seconds
+async def change_status():
+    await client.change_presence(activity = discord.Game(next(status)))
+
+
+@client.command()
+#start looping bot status
+async def start_status_loop(ctx):
+    await ctx.send('status looping has begun')
+    change_status.start()
+
+
 #loads all cogs by default when we start up the bot (could also be made into a command)
 for filename in os.listdir("./Terry's Test Bot - Cogs"): #looks for python files 
     if filename.endswith('.py'):
@@ -136,8 +169,9 @@ for filename in os.listdir("./Terry's Test Bot - Cogs"): #looks for python files
 
 
 
-
 client.run(bot_token) #initiates our bot on discord
+    
+
 
     
 
