@@ -20,6 +20,7 @@ client = commands.Bot(command_prefix= '//' , intents = intents)
 bot_token =  #the bot's token is similar to a password to directly access the bot on
                                                                           #discord from our code
 bot_maintenance_channel_id = 
+txrry_id = 
 
 
 @client.event
@@ -67,6 +68,7 @@ async def on_message(message):
 async def on_command_error(ctx, error):
 
     await ctx.send('ah looks like we encountered an error with your command ' + '\N{FACE WITH OPEN MOUTH}')
+    
     if isinstance(error, commands.MissingRequiredArgument): #we could also specify the specific error if we want
         await ctx.send('missing required arguments!')
 
@@ -90,7 +92,8 @@ async def random_ans(ctx, *, question): # * lets us take in multiple arguments a
 
 
 @client.command()
-#clears a certain amount of messages from a channel
+@commands.has_permissions(manage_messages = True)
+#clears a certain amount of messages from a channel (only enabled for admin with message managing permissions)
 async def clear(ctx, amount: int):                 
     await ctx.channel.purge(limit = amount)
 
@@ -98,8 +101,19 @@ async def clear(ctx, amount: int):
 @clear.error
 #command-specific error handling
 async def clear_error(ctx, error):
-    await ctx.send('please specify an amount of messages to delete')
+    await ctx.send('please specify an amount of messages to delete or ask admin for permission to use //clear')
 
+    
+#example of custom command that only I can use
+def is_it_me(ctx):
+    return ctx.author.id == txrry_id
+
+@client.command()
+@commands.check(is_it_me)
+async def custom_test(ctx):
+    await ctx.send(f'hey im {ctx.author}, the creator of this bot')
+
+    
 @client.command()
 #kicking a member
 async def kick(ctx, member: discord.Member, *, reason = None):
@@ -170,6 +184,7 @@ for filename in os.listdir("./Terry's Test Bot - Cogs"): #looks for python files
 
 
 client.run(bot_token) #initiates our bot on discord
+
     
 
 
