@@ -13,11 +13,20 @@ from discord.ext import tasks
 from itertools import cycle
 import os
 import random
+import json
+
+def get_prefix(client, message):
+    
+    #getting custom prefixes for servers
+    with open('prefixes.json', 'r') as file:
+        prefixes = json.load(file)
+
+    return prefixes[str(message.guild.id)]
 
 intents = discord.Intents(messages = True, guilds = True, reactions = True, members = True, presences = True)
-client = commands.Bot(command_prefix= '//' , intents = intents)
+client = commands.Bot(command_prefix = get_prefix , intents = intents)
 
-bot_token =  #the bot's token is similar to a password to directly access the bot on
+bot_token = '' #the bot's token is similar to a password to directly access the bot on
                                                                           #discord from our code
 bot_maintenance_channel_id = 
 txrry_id = 
@@ -36,6 +45,46 @@ async def on_ready():
                                                                                                                   
 
 @client.event
+#sets default command prefix to '//'
+async def on_guild_join(guild):
+
+    with open('prefixes.json', 'r') as file:
+        prefixes = json.load(file)
+
+    prefixes[str(guild.id)] = '//' 
+
+    with open('prefixes.json', 'w') as file:
+        json.dump(prefixes, file, indent = 4)
+
+
+@client.event
+#removing command prefix when bot leaves a server
+async def on_guild_remove(guild):
+
+    with open('prefixes.json', 'r') as file:
+        prefixes = json.load(file)
+
+    prefixes.pop(str(guild.id))
+
+    with open('prefixes.json', 'w') as file:
+        json.dump(prefixes, file, indent = 4)
+
+
+@client.command()
+#changing custom bot prefix
+async def change_prefix(ctx, *, prefix):
+
+    with open('prefixes.json', 'r') as file:
+        prefixes = json.load(file)
+
+    prefixes[str(ctx.guild.id)] = prefix 
+
+    with open('prefixes.json', 'w') as file:
+        json.dump(prefixes, file, indent = 4)
+
+    await ctx.send(f'prefix changed to: {prefix}')
+
+@client.event
 #notifies us in the shell when users have joined the server
 async def on_member_join(member):
     print(f'{member} has joined the server')
@@ -48,7 +97,7 @@ async def on_member_remove(member):
 
 
 @client.event
-#responds to "//" command messages for our bot
+#responds to "//" command messages for our bot (just testing them as events)
 async def on_message(message):
     
     await client.process_commands(message) #lets bot process both commands and messages
@@ -176,6 +225,13 @@ async def start_status_loop(ctx):
     change_status.start()
 
 
+@client.command()
+#ends bot status loop
+async def end_status_loop(ctx):
+    await ctx.send('status looping has ended')
+    await client.change_presence(activity = discord.Activity(type = discord.ActivityType.watching, name = 'YouTube'))
+
+
 #loads all cogs by default when we start up the bot (could also be made into a command)
 for filename in os.listdir("./Terry's Test Bot - Cogs"): #looks for python files 
     if filename.endswith('.py'):
@@ -184,6 +240,7 @@ for filename in os.listdir("./Terry's Test Bot - Cogs"): #looks for python files
 
 
 client.run(bot_token) #initiates our bot on discord
+    
 
     
 
