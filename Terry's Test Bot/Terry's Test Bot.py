@@ -107,9 +107,6 @@ async def on_message(message):
 
         if message.content == '//help': #gives some info about our bot
             await message.channel.send('Hey! This is a test bot! No specific purpose, just used to play around with the Discord library and its functions!')
-        
-        elif message.content == '//roll dice': #rolls a dice 
-            await message.channel.send(f'you rolled a {random.randint(1,6)} ' + '\N{GAME DIE}') #use '/N{emoji name}' to send emojis
 
 
 @client.event
@@ -127,6 +124,11 @@ async def on_command_error(ctx, error):
 async def ping(ctx): #ctx = context
     await ctx.send(f'pong! {round(client.latency * 1000)}ms')
 
+
+@client.command()
+#rolls dice
+async def roll_dice(ctx):
+        await ctx.send(f'you rolled a {random.randint(1,6)} ' + '\N{GAME DIE}') #use '/N{emoji name}' to send emojis
 
 @client.command(aliases = ['8ball', 'question']) #aliases are exchangable user prompts that call this command
 #gives user random answer to a question
@@ -238,9 +240,9 @@ for filename in os.listdir("./Terry's Test Bot - Cogs"): #looks for python files
         client.load_extension(f"Terry's Test Bot - Cogs.{filename[:-3]}")
 
 
+    
 
 client.run(bot_token) #initiates our bot on discord
-    
 
     
 
