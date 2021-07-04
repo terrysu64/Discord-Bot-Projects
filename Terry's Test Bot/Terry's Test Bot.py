@@ -6,6 +6,7 @@
 #all of the bot events will be written with the help of the discord library
 
 #Invite link: https://discord.com/api/oauth2/authorize?client_id=858803690596073482&permissions=0&scope=bot
+#Use //help in your discord server to learn more about this bot!
 
 import discord
 from discord.ext import commands
