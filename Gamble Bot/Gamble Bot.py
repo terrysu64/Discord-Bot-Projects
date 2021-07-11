@@ -9,7 +9,6 @@
 import discord
 from discord.ext import commands
 from discord.ext import tasks
-from itertools import cycle
 import os
 import random
 import json
