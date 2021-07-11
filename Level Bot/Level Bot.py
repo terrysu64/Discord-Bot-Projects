@@ -1,6 +1,6 @@
 #Date: July 11, 2021
 #Author: Terry Su
-#Purpose: a simpling levelling bot with xp tracking for server members;
+#Purpose: a simple leveling bot with XP tracking for server members;
 #         start by using $help and $info in your discord server to learn
 #         more about this bot!
 
