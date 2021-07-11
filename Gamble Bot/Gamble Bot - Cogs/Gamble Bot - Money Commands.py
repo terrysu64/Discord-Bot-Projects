@@ -31,8 +31,8 @@ class Money_Commands(commands.Cog):
         return
 
 
-    @commands.command()
-    #lists out server leaderboard (sorted by richest first)
+   @commands.command()
+    #lists out server's top 10 leaderboard (sorted by richest first)
     async def leaderboard(self, ctx):
 
         with open('money.json', 'r') as file:
@@ -41,22 +41,23 @@ class Money_Commands(commands.Cog):
         server = money[str(ctx.guild.id)]
         server = dict(sorted(server.items(), key=operator.itemgetter(1),reverse=True))
 
-        rank = 1
-        for member in server:
+  
+        for rank,member in enumerate(server):
 
-            if rank == 1:
-                await ctx.send(f'{rank}. {member}: ${server[member]} \N{FIRST PLACE MEDAL}')
+            if rank == 0:
+                await ctx.send(f'{rank+1}. {member}: ${server[member]} \N{FIRST PLACE MEDAL}')
+
+            elif rank == 1:
+                await ctx.send(f'{rank+1}. {member}: ${server[member]} \N{SECOND PLACE MEDAL}')
 
             elif rank == 2:
-                await ctx.send(f'{rank}. {member}: ${server[member]} \N{SECOND PLACE MEDAL}')
-
-            elif rank == 3:
-                await ctx.send(f'{rank}. {member}: ${server[member]} \N{THIRD PLACE MEDAL}')
+                await ctx.send(f'{rank+1}. {member}: ${server[member]} \N{THIRD PLACE MEDAL}')
 
             else:
-                await ctx.send(f'{rank}. {member}: ${server[member]}')
+                await ctx.send(f'{rank+1}. {member}: ${server[member]}')
 
-            rank += 1
+                if rank == 9:
+                    break
 
         return
 
