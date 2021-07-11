@@ -42,7 +42,7 @@ async def on_ready():
 #when Level Bot joins a server, all members start with 0 XP at level 0 by default;
 async def on_guild_join(guild):
 
-    print(f'Gamble Bot has joined: {guild}')
+    print(f'Level Bot has joined: {guild}')
     await client.change_presence(activity = discord.Game('with bottles o enchanting'))
 
 
@@ -74,7 +74,7 @@ async def on_guild_join(guild):
 #when Level Bot leaves a server, all the server's data is wiped out  
 async def on_guild_remove(guild):
 
-    print(f'Gamble Bot has left: {guild}')
+    print(f'Level Bot has left: {guild}')
 
     #removing server prefix
     with open('prefixes.json', 'r') as file:
