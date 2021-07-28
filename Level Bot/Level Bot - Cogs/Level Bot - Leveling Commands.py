@@ -41,7 +41,7 @@ class Leveling_Commands(commands.Cog):
 
 
     @commands.command()
-    #lists out server's top 10 leaderboard (sorted by richest first)
+    #lists out server's top 10 leaderboard (sorted by highest XP first)
     async def leaderboard(self, ctx):
 
         with open('level.json', 'r') as file:
