@@ -31,7 +31,7 @@ class Money_Commands(commands.Cog):
         return
 
 
-   @commands.command()
+    @commands.command()
     #lists out server's top 10 leaderboard (sorted by richest first)
     async def leaderboard(self, ctx):
 
