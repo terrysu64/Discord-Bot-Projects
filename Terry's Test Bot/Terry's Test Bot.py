@@ -30,8 +30,6 @@ client = commands.Bot(command_prefix = get_prefix , intents = intents)
 bot_token = '' #the bot's token is similar to a password to directly access the bot on
                                                                           #discord from our code
 bot_maintenance_channel_id = 
-txrry_id = 
-
 
 @client.event
 #set's up or updates our bot
@@ -107,7 +105,7 @@ async def on_message(message):
     if message.author != client.user: #don't respond if the author is ourselves
 
         if message.content == '//help': #gives some info about our bot
-            await message.channel.send('Hey! This is a test bot! No specific purpose, just used to play around with the Discord library and its functions!')
+            await message.channel.send("Hey! This is a test bot! I'm just used by my creator to help him play around with the Discord library and test some functions!")
 
 
 @client.event
