@@ -26,6 +26,12 @@ class Gambling_Commands(commands.Cog):
 
         return True
     
+    def dev_check(self, id):
+        with open('data/devs.json') as f:
+            devs = json.load(f)
+            if id in devs:
+                return True
+        return False
     
     @commands.Cog.listener()
     async def on_ready(self):
