@@ -8,9 +8,9 @@
 
 import discord
 from discord.ext import commands
-from discord.ext import tasks
+from dotenv import load_dotenv
+load_dotenv()
 import os
-import random
 import json
 
 #INITIALIZING BOT PROPRETIES AND OTHER GLOBAL VARIABLES
@@ -24,9 +24,8 @@ def set_prefix(client, message):
 
 intents = discord.Intents(messages = True, guilds = True, reactions = True, members = True, presences = True)
 client = commands.Bot(command_prefix = set_prefix, intents = intents)
-bot_token = 
-bot_maintenance_channel_id = 
-
+bot_token = os.environ.get("BOT_TOKEN")
+bot_maintenance_channel_id = os.environ.get("MAINTENANCE_CHANNEL")
 
 # GENERAL EVENTS
 
@@ -34,7 +33,7 @@ bot_maintenance_channel_id =
 async def on_ready():
 
     print('Gamble Bot is now online!')
-    await client.get_channel(bot_maintenance_channel_id).send('Gamble Bot is updated and ready to go!')
+    await client.get_channel(int(bot_maintenance_channel_id)).send('Gamble Bot is updated and ready to go!')
     await client.change_presence(status = discord.Status.idle, activity = discord.Game('with money'))
 
  
