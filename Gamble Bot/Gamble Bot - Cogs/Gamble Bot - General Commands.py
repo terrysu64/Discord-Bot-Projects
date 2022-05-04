@@ -4,13 +4,21 @@
 
 import discord
 from discord.ext import commands
-import json
+from pymongo import MongoClient
+from dotenv import load_dotenv
+load_dotenv()
+import os
+database_password = os.environ.get("DATABASE_PASSWORD")
+
+cluster = MongoClient(f'mongodb+srv://terrysu64:{database_password}@discord-bots.ho9kj.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
+db = cluster["gamble-bot"]
+prefixes_collection = db["prefixes"]
 
 #GENERAL SERVER/BOT-RELATED COMMANDS
 
 class General_Commands(commands.Cog):
 
-    def __init__(self, client):
+    def __init__(self, client): 
         self.client = client
 
 
@@ -30,13 +38,8 @@ class General_Commands(commands.Cog):
     @commands.command()
     #changes server prefix
     async def change_prefix(self, ctx, *, prefix):
-        with open('prefixes.json', 'r') as file:
-            prefixes = json.load(file)
 
-        prefixes[str(ctx.guild.id)] = prefix 
-
-        with open('prefixes.json', 'w') as file:
-            json.dump(prefixes, file, indent = 4)
+        prefixes_collection.update_one({"guild": str(ctx.guild.id)}, {"$set": {"prefix":prefix}})
 
         await ctx.send(f"Gamble Bot's server prefix changed to: {prefix}")
 
