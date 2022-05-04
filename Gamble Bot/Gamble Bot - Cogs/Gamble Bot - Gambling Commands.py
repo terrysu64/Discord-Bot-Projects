@@ -6,7 +6,15 @@ import discord
 from discord.ext import commands
 import json
 import random
-import time
+from pymongo import MongoClient
+from dotenv import load_dotenv
+load_dotenv()
+import os
+database_password = os.environ.get("DATABASE_PASSWORD")
+
+cluster = MongoClient(f'mongodb+srv://terrysu64:{database_password}@discord-bots.ho9kj.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
+db = cluster["gamble-bot"]
+money_collection = db["prefixes"]
 
 #GAMBLING ACTION COMMANDS
 
@@ -18,13 +26,9 @@ class Gambling_Commands(commands.Cog):
 
     def money_check(self, ctx): #checks a member's money in a specific server
         
-        with open('money.json', 'r') as file:
-            money = json.load(file)
-
-        if money[str(ctx.guild.id)][str(ctx.author)] <= 0:
-            return False
-
-        return True
+        result = money_collection.find_one({"guild": str(ctx.guild.id), "member": str(ctx.author)})
+        if result and result["member"] <= 0: return True
+        return False
     
     @commands.Cog.listener()
     async def on_ready(self):
@@ -53,14 +57,7 @@ class Gambling_Commands(commands.Cog):
         if msg.content.lower() == str(num):
 
             #change data within money.json
-            with open('money.json', 'r') as file:
-                money = json.load(file)
-
-                money[str(ctx.guild.id)][str(ctx.author)] = 5
-                await ctx.send(f'correct! you cleared of your debts and were blessed $5! \N{PERSON WITH FOLDED HANDS}')
-
-            with open('money.json', 'w') as file:
-                json.dump(money, file, indent = 4)
+            money_collection.update_one({"guild": str(ctx.guild.id), "member": str(ctx.author)}, {"$set": {"money": 5}})
 
         else:
             await ctx.send('incorrect! try again later...')
@@ -79,16 +76,10 @@ class Gambling_Commands(commands.Cog):
         result = random.randint(1,6)
 
         #change data within money.json
-        with open('money.json', 'r') as file:
-            money = json.load(file)
-
-        money[str(ctx.guild.id)][str(ctx.author)] += outcomes[result]
-
-        with open('money.json', 'w') as file:
-            json.dump(money, file, indent = 4)
+        result = money_collection.find_one({"guild": str(ctx.guild.id), "member": str(ctx.author)})
+        money_collection.update_one({"guild": str(ctx.guild.id), "member": str(ctx.author)}, {"$set": {"money": result["money"]+5}})
 
         await ctx.send(f'you rolled a {result} \N{GAME DIE}')
-
         
         #tell member their result
         if result == 1 or result == 2 or result == 3:
@@ -122,19 +113,13 @@ class Gambling_Commands(commands.Cog):
             result = random.randint(0,1)
             
             #change data within money.json
-            with open('money.json', 'r') as file:
-                money = json.load(file)
-
+            result = money_collection.find_one({"guild": str(ctx.guild.id), "member": str(ctx.author)})
             if result == 0:
-                money[str(ctx.guild.id)][str(ctx.author)] += 10
+                money_collection.update_one({"guild": str(ctx.guild.id), "member": str(ctx.author)}, {"$set": {"money": result["money"]+10}})
 
             else:
-                money[str(ctx.guild.id)][str(ctx.author)] -= 10
-        
-            with open('money.json', 'w') as file:
-                json.dump(money, file, indent = 4)
+                money_collection.update_one({"guild": str(ctx.guild.id), "member": str(ctx.author)}, {"$set": {"money": result["money"]-10}})
 
-            
             #tell member their result
             if result == 1:
                 await ctx.send(f'RIP you lost $10 \N{GRIMACING FACE}')
@@ -162,19 +147,16 @@ class Gambling_Commands(commands.Cog):
             await ctx.send('invalid amount')
 
         else:
-            result = random.randint(0,3)
+            int_result = random.randint(0,3)
+            result = money_collection.find_one({"guild": str(ctx.guild.id), "member": str(ctx.author)})
 
-            if result == 0:
-                money[str(ctx.guild.id)][str(ctx.author)] += int(amount)
+            if int_result == 0:
+                money_collection.update_one({"guild": str(ctx.guild.id), "member": str(ctx.author)}, {"$set": {"money": result["money"]+int(amount)}})
                 await ctx.send(f'Nice one! You won ${amount} \N{MONEY-MOUTH FACE}')
 
             else:
-                money[str(ctx.guild.id)][str(ctx.author)] -= int(amount)
-                await ctx.send(f'RIP you lost ${amount} \N{GRIMACING FACE}')
-
-        with open('money.json', 'w') as file:
-                json.dump(money, file, indent = 4)
-                
+                money_collection.update_one({"guild": str(ctx.guild.id), "member": str(ctx.author)}, {"$set": {"money": result["money"]-int(amount)}})
+                await ctx.send(f'RIP you lost ${amount} \N{GRIMACING FACE}')     
 
 def setup(client):
     client.add_cog(Gambling_Commands(client))

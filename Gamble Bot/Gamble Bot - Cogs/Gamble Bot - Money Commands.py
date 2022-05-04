@@ -4,8 +4,15 @@
 
 import discord
 from discord.ext import commands
-import json
-import operator
+from pymongo import MongoClient
+from dotenv import load_dotenv
+load_dotenv()
+import os
+database_password = os.environ.get("DATABASE_PASSWORD")
+
+cluster = MongoClient(f'mongodb+srv://terrysu64:{database_password}@discord-bots.ho9kj.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
+db = cluster["gamble-bot"]
+money_collection = db["prefixes"]
 
 #MONEY ACTION COMMANDS
 
@@ -24,10 +31,9 @@ class Money_Commands(commands.Cog):
     #allows member to lookup how much money they have in a server
     async def rich(self, ctx):
 
-        with open('money.json', 'r') as file:
-            money = json.load(file)
-   
-        await ctx.send(f'{ctx.author}: ${money[str(ctx.guild.id)][str(ctx.author)]}')
+        result = money_collection.find_one({"guild": str(ctx.guild.id), "member": str(ctx.author)})
+        print(result)
+        await ctx.send(f'{ctx.author}: ${result["money"]}')
         return
 
 
@@ -35,13 +41,9 @@ class Money_Commands(commands.Cog):
     #lists out server's top 10 leaderboard (sorted by richest first)
     async def leaderboard(self, ctx):
 
-        with open('money.json', 'r') as file:
-            money = json.load(file)
+        server = money_collection.find({"guild": str(ctx.guild.id)})
+        server.sort(key=lambda x:-x["money"])
 
-        server = money[str(ctx.guild.id)]
-        server = dict(sorted(server.items(), key=operator.itemgetter(1),reverse=True))
-
-  
         for rank,member in enumerate(server):
 
             if rank == 0:
@@ -58,7 +60,6 @@ class Money_Commands(commands.Cog):
 
                 if rank == 9:
                     break
-
         return
 
 

@@ -11,7 +11,6 @@ from discord.ext import commands
 from dotenv import load_dotenv
 load_dotenv()
 import os
-import json
 from pymongo import MongoClient
 
 #INITIALIZING 
@@ -57,16 +56,9 @@ async def on_guild_join(guild):
 
     
     #Distributing money to members
-    with open('money.json', 'r') as file:
-        money = json.load(file)
-
-    money[str(guild.id)] = {}
-
     for member in guild.members:
-        money[str(guild.id)][str(member)] = 100 
-
-    with open('money.json', 'w') as file:
-        json.dump(money, file, indent = 4)
+        post = {"guild": str(guild.id), "member": str(member), "money": 100}
+        money_collection.insert_one(post)
 
 
 @client.event
@@ -75,45 +67,26 @@ async def on_guild_remove(guild):
 
     print(f'Gamble Bot has left: {guild}')
 
-    #removing server prefix
+    #removing server prefix and money data
     delete = {"guild":str(guild.id)}
     prefixes_collection.delete_one(delete)
-
-    #removing money data
-    with open('money.json', 'r') as file:
-        money = json.load(file)
-
-    money.pop(str(guild.id))
-
-    with open('money.json', 'w') as file:
-        json.dump(money, file, indent = 4)
+    money_collection.delete_many(delete)
 
 
 @client.event
 #when a member joins a server with Gamble Bot, they are given the starting $100
 async def on_member_join(member):
 
-    with open('money.json', 'r') as file:
-        money = json.load(file)
-
-    money[str(member.guild.id)][str(member)] = 100
-
-    with open('money.json', 'w') as file:
-        json.dump(money, file, indent = 4)
+    post = {"guild": str(member.guild.id), "member": str(member), "money": 100}
+    money_collection.insert_one(post)
 
 
 @client.event
 #when a member leaves a server with Gamble Bot, their data is erased
 async def on_member_remove(member):
 
-    with open('money.json', 'r') as file:
-        money = json.load(file)
-
-    money[str(member.guild.id)].pop(str(member))
-
-    with open('money.json', 'w') as file:
-        json.dump(money, file, indent = 4)
-
+    delete = {"guild":str(member.guild.id), "member": str(member)}
+    prefixes_collection.delete_one(delete)
 
 #GENERAL ERROR HANDLING
         
