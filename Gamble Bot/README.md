@@ -39,23 +39,23 @@ money_collection = db["money"]
 
 <h3>Usage and Commands</h3>
 
-`$borrow`
+`$borrow`: plays secret game with users with zero or negative earnings for a chance to gain a $5 starter pack
 
-`$flip_coin`
+`$flip_coin`: 1/2 chance of +- $10
 
-`$raw_bet`
+`$raw_bet`: 1/4 chance of losing or doubling a sum of the user's choice
 
-`$roll_dice`
+`$roll_dice`: 1/6 chance of +- $60
 
-`$change_prefix`
+`$change_prefix`: change command prefix for bot
 
-`$info $help`
+`$info $help`: general info/help section about the bot
 
-`$ping`
+`$ping`: connection latency check (in ms)
 
-`$leaderboard`
+`$leaderboard`: displays guild leaderboard (sorted by net worth in descending order)
 
-`$rich`
+`$rich`: lets user check their current net worth
 
 <h3>Issues and Updates</h3>
 
