@@ -39,23 +39,27 @@ money_collection = db["money"]
 
 <h3>Usage and Commands</h3>
 
+`$borrow`
+
+`$flip_coin`
+
+`$raw_bet`
+
+`$roll_dice`
+
+`$change_prefix`
+
+`$info $help`
+
+`$ping`
+
+`$leaderboard`
+
+`$rich`
+
 <h3>Issues and Updates</h3>
 
-- usage
-  - commands
-  Gambling_Commands:
-  borrow        
-  flip_coin     
-  raw_bet       
-  roll_dice     
-General_Commands:
-  change_prefix 
-  info          
-  ping          
-Money_Commands:
-  leaderboard   
-  rich          
-​No Category:
-  help          Shows this message
+- Feel free to create PRs and raise relevant issues in the repo!
+- New feature under construction: `mini-games mode 🎱`
+  
 
-- issues and updates
