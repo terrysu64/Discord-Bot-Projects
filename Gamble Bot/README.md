@@ -62,5 +62,6 @@ money_collection = db["money"]
 
 - Feel free to create PRs and raise relevant issues in the repo!
 - New feature under construction: `mini-games mode 🎱`
+- Playing around with Web3 and Solidity smart contracts (may incorporate real-time betting on the Goreli network)
   
 
